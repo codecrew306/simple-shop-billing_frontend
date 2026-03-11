@@ -73,7 +73,7 @@ export default function Billing() {
       date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
       items: [...cart],
       total: subtotal,
-      paid: 0,
+      paid: cash > 0 ? Math.min(cash, subtotal) : 0,
     });
     toast.success("Saved as tab");
     clearCart();
