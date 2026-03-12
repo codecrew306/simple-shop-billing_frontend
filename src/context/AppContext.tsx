@@ -105,7 +105,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AppContext.Provider value={{ isLoggedIn, storeName, storeId: "SHOP-7X9K2M", ownerName, cart, transactions, tabs, login, logout, addToCart, updateCartQuantity, removeFromCart, clearCart, addTransaction, addTab, settleTab, setStoreName, setOwnerName }}>
+    <AppContext.Provider value={{ isLoggedIn, storeName, storeId: "SHOP-7X9K2M", ownerName, cart, transactions, tabs, login, logout, addToCart, updateCartQuantity, removeFromCart, clearCart, addTransaction, addTab, settleTab, updateTabPayment, setStoreName, setOwnerName }}>
       {children}
     </AppContext.Provider>
   );
