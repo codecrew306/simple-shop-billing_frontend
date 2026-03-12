@@ -5,12 +5,12 @@ import { TrendingUp, ShoppingCart } from "lucide-react";
 import TransactionDetailModal from "@/components/modals/TransactionDetailModal";
 import type { Transaction } from "@/context/AppContext";
 
-const CHART_FILTERS = ["1M", "3M", "6M", "1Y"];
+const CHART_FILTERS = ["1W", "1M", "3M"];
 
 export default function Dashboard() {
   const { transactions } = useApp();
   const navigate = useNavigate();
-  const [chartFilter, setChartFilter] = useState("1M");
+  const [chartFilter, setChartFilter] = useState("1W");
   const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
 
   const todaySales = transactions.reduce((s, t) => s + t.total, 0);
