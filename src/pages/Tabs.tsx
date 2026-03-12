@@ -13,20 +13,28 @@ export default function TabsPage() {
     if (!paymentTab) return;
     const amt = parseFloat(amountReceived) || 0;
     const outstanding = paymentTab.total - paymentTab.paid;
-    if (amt < outstanding) { toast.error("Amount must cover outstanding balance"); return; }
+    if (amt <= 0) { toast.error("Enter a valid amount"); return; }
+    if (amt > outstanding) { toast.error("Amount exceeds outstanding balance"); return; }
 
-    addTransaction({
-      id: `t-${Date.now()}`,
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-      customer: paymentTab.customer,
-      phone: paymentTab.phone,
-      items: paymentTab.items,
-      total: paymentTab.total,
-      payment: "Cash",
-    });
-    settleTab(paymentTab.id);
-    toast.success("Tab settled");
+    if (amt >= outstanding) {
+      // Full settlement
+      addTransaction({
+        id: `t-${Date.now()}`,
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+        customer: paymentTab.customer,
+        phone: paymentTab.phone,
+        items: paymentTab.items,
+        total: paymentTab.total,
+        payment: "Cash",
+      });
+      settleTab(paymentTab.id);
+      toast.success("Tab fully settled!");
+    } else {
+      // Partial payment
+      updateTabPayment(paymentTab.id, amt);
+      toast.success(`₹${amt.toLocaleString()} received. Outstanding: ₹${(outstanding - amt).toLocaleString()}`);
+    }
     setPaymentTab(null);
     setAmountReceived("");
   };
