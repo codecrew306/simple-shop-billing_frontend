@@ -1,10 +1,11 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Home, Receipt, FileText, Settings } from "lucide-react";
+import { Home, Receipt, FileText, ArrowLeftRight, Settings } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 
 const NAV_ITEMS = [
   { path: "/dashboard", icon: Home, label: "Home" },
   { path: "/billing", icon: Receipt, label: "Billing" },
+  { path: "/transactions", icon: ArrowLeftRight, label: "Transactions" },
   { path: "/tabs", icon: FileText, label: "Tabs" },
   { path: "/settings", icon: Settings, label: "Settings" },
 ];
