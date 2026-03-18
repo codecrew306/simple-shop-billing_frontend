@@ -16,6 +16,43 @@ export default function ReceiptModal({ open, onClose, transaction }: Props) {
     onClose();
   };
 
+  const handlePrint = () => {
+    const printContent = document.getElementById("receipt-content");
+    if (!printContent) return;
+    const printWindow = window.open("", "_blank", "width=400,height=600");
+    if (!printWindow) { toast.error("Pop-up blocked. Please allow pop-ups."); return; }
+    printWindow.document.write(`
+      <html><head><title>Receipt</title>
+      <style>
+        body { font-family: monospace; font-size: 12px; padding: 20px; max-width: 300px; margin: 0 auto; }
+        .row { display: flex; justify-content: space-between; }
+        .bold { font-weight: bold; }
+        .center { text-align: center; }
+        .divider { border-top: 1px dashed #ccc; margin: 8px 0; }
+        .muted { color: #888; }
+      </style></head><body>
+      <div class="center"><p class="bold" style="font-size:14px">CITY GROCERY</p>
+      <p class="muted">123 Main Street, Mumbai</p>
+      <p class="muted">GST: 27ABCDE1234F1Z5</p>
+      <p class="muted">Tel: +91 98765 43210</p></div>
+      <div class="divider"></div>
+      <p>Bill Date: ${transaction.date}</p>
+      <p>Time: ${transaction.time}</p>
+      <p>Bill No: INV-${Date.now().toString().slice(-6)}</p>
+      ${transaction.customer !== "Walk-in" ? `<p>Customer: ${transaction.customer}</p>` : ""}
+      <div class="divider"></div>
+      ${transaction.items.map(item => `<div class="row"><span>${item.name} x${item.quantity}</span><span>₹${item.price * item.quantity}</span></div>`).join("")}
+      <div class="divider"></div>
+      <div class="row bold"><span>Total</span><span>₹${transaction.total}</span></div>
+      <p>Payment: Cash</p>
+      <div class="divider"></div>
+      <p class="center muted">Thank you for shopping!</p>
+      </body></html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-foreground/50" />
