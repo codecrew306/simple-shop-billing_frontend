@@ -35,8 +35,10 @@ export default function Billing() {
     toast.success(`Product added: ${product.name}`);
   };
 
-  const simulateError = () => {
-    toast.error("Scan failed. Please try again or enter manually.");
+  const simulatePhoneScan = () => {
+    const product = SAMPLE_PRODUCTS[Math.floor(Math.random() * SAMPLE_PRODUCTS.length)];
+    addToCart(product);
+    toast.success(`Scanned via phone: ${product.name}`);
   };
 
   const handleMarkPaid = () => {
