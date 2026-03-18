@@ -89,7 +89,14 @@ export default function ReceiptModal({ open, onClose, transaction }: Props) {
 
         <div className="flex gap-3 mt-5">
           <button onClick={onClose} className="flex-1 h-11 border border-border rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition-colors">Close</button>
-          <button onClick={handleShare} className="flex-1 h-11 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:brightness-110 transition-all">Share Receipt</button>
+          <button onClick={handlePrint} className="flex-1 h-11 border-2 border-accent text-accent rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5 hover:bg-accent/5 transition-colors">
+            <Printer size={15} />
+            Print
+          </button>
+          <button onClick={handleShare} className="flex-1 h-11 bg-primary text-primary-foreground rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5 hover:brightness-110 transition-all">
+            <Share2 size={15} />
+            Share
+          </button>
         </div>
       </div>
     </div>
