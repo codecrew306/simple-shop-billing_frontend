@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useApp, type CartItem } from "@/context/AppContext";
 import { toast } from "sonner";
-import { Plus, Minus, X, ChevronDown, ChevronUp, ScanBarcode, Smartphone, User, ShoppingBag, PackagePlus } from "lucide-react";
+import { Plus, Minus, X, ChevronDown, ChevronUp, ScanBarcode, Smartphone, User, ShoppingBag, PackagePlus, Search } from "lucide-react";
 import AddProductModal from "@/components/modals/AddProductModal";
 import ReceiptModal from "@/components/modals/ReceiptModal";
+import SearchProductModal from "@/components/modals/SearchProductModal";
 
 const SAMPLE_PRODUCTS = [
   { id: "p1", name: "Milk 2L", price: 60, barcode: "8901234567890" },
