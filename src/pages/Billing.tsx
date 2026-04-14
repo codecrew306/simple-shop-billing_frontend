@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useApp, type CartItem } from "@/context/AppContext";
 import { toast } from "sonner";
-import { Plus, Minus, X, ChevronDown, ChevronUp, ScanBarcode, Smartphone, User, ShoppingBag, PackagePlus } from "lucide-react";
+import { Plus, Minus, X, ChevronDown, ChevronUp, ScanBarcode, Smartphone, User, ShoppingBag, PackagePlus, Search } from "lucide-react";
 import AddProductModal from "@/components/modals/AddProductModal";
 import ReceiptModal from "@/components/modals/ReceiptModal";
+import SearchProductModal from "@/components/modals/SearchProductModal";
 
 const SAMPLE_PRODUCTS = [
   { id: "p1", name: "Milk 2L", price: 60, barcode: "8901234567890" },
@@ -22,6 +23,7 @@ export default function Billing() {
   const [cashReceived, setCashReceived] = useState("");
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
   const [lastTransaction, setLastTransaction] = useState<any>(null);
 
   const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
@@ -96,7 +98,7 @@ export default function Billing() {
 
   return (
     <div className="max-w-2xl mx-auto pb-4">
-      {/* Top Header with Add Product */}
+      {/* Top Header with scanner buttons and Add Product */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <div>
           <h1 className="text-lg font-bold text-foreground">New Bill</h1>
@@ -104,44 +106,40 @@ export default function Billing() {
             {totalItems > 0 ? `${totalItems} item${totalItems > 1 ? "s" : ""} in cart` : "Scan to start"}
           </p>
         </div>
-        <button
-          onClick={() => setShowAddProduct(true)}
-          className="h-9 px-4 rounded-full bg-accent text-accent-foreground flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-md text-xs font-semibold"
-        >
-          <PackagePlus size={15} />
-          Add Item
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={simulateScan}
+            className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent hover:bg-accent/20 transition-colors"
+            title="Barcode Scanner"
+          >
+            <ScanBarcode size={16} />
+          </button>
+          <button
+            onClick={simulatePhoneScan}
+            className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent hover:bg-accent/20 transition-colors"
+            title="Phone Camera"
+          >
+            <Smartphone size={16} />
+          </button>
+          <button
+            onClick={() => setShowAddProduct(true)}
+            className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent hover:bg-accent/20 transition-colors"
+            title="Add New Product"
+          >
+            <PackagePlus size={16} />
+          </button>
+        </div>
       </div>
 
       <div className="px-4 space-y-4">
-        {/* Scanner Section - Compact pill-style action bar */}
-        <section className="bg-card rounded-2xl card-shadow overflow-hidden border border-border">
-          <div className="bg-accent/5 p-4 flex items-center gap-3 border-b border-border">
-            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
-              <ScanBarcode size={20} className="text-accent" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-foreground">Scan Product</p>
-              <p className="text-[11px] text-muted-foreground">Choose your scanning method</p>
-            </div>
-          </div>
-          <div className="p-3 grid grid-cols-2 gap-2">
-            <button
-              onClick={simulateScan}
-              className="h-12 bg-accent text-accent-foreground rounded-xl text-xs font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-[0.98]"
-            >
-              <ScanBarcode size={16} />
-              Barcode Scanner
-            </button>
-            <button
-              onClick={simulatePhoneScan}
-              className="h-12 border-2 border-accent text-accent rounded-xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-accent/5 transition-colors active:scale-[0.98]"
-            >
-              <Smartphone size={16} />
-              Phone Camera
-            </button>
-          </div>
-        </section>
+        {/* Search Products Button */}
+        <button
+          onClick={() => setShowSearch(true)}
+          className="w-full h-12 bg-card rounded-2xl card-shadow border border-border flex items-center gap-3 px-4 text-muted-foreground hover:border-primary/30 transition-colors"
+        >
+          <Search size={16} />
+          <span className="text-sm">Search products...</span>
+        </button>
 
         {/* Customer Toggle */}
         <section className="bg-card rounded-2xl card-shadow overflow-hidden">
@@ -269,6 +267,14 @@ export default function Billing() {
 
       <AddProductModal open={showAddProduct} onClose={() => setShowAddProduct(false)} onSave={handleAddProduct} />
       {lastTransaction && <ReceiptModal open={showReceipt} onClose={() => setShowReceipt(false)} transaction={lastTransaction} />}
+      <SearchProductModal
+        open={showSearch}
+        onClose={() => setShowSearch(false)}
+        products={SAMPLE_PRODUCTS}
+        onAddToCart={(p) => { addToCart(p); }}
+        onEditProduct={(p) => { toast.info(`Edit: ${p.name} (not yet implemented)`); }}
+        onDeleteProduct={(p) => { toast.info(`Delete: ${p.name} (not yet implemented)`); }}
+      />
     </div>
   );
 }
