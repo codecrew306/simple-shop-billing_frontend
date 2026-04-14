@@ -6,7 +6,7 @@ import AddProductModal from "@/components/modals/AddProductModal";
 import ReceiptModal from "@/components/modals/ReceiptModal";
 import SearchProductModal from "@/components/modals/SearchProductModal";
 
-const SAMPLE_PRODUCTS = [
+const INITIAL_PRODUCTS = [
   { id: "p1", name: "Milk 2L", price: 60, barcode: "8901234567890" },
   { id: "p2", name: "Bread", price: 40, barcode: "8901234567891" },
   { id: "p3", name: "Rice 5kg", price: 630, barcode: "8901234567892" },
@@ -25,6 +25,7 @@ export default function Billing() {
   const [showReceipt, setShowReceipt] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [lastTransaction, setLastTransaction] = useState<any>(null);
+  const [products, setProducts] = useState(INITIAL_PRODUCTS);
 
   const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
   const cash = parseFloat(cashReceived) || 0;
@@ -32,13 +33,15 @@ export default function Billing() {
   const insufficientCash = cash > 0 && cash < subtotal;
 
   const simulateScan = () => {
-    const product = SAMPLE_PRODUCTS[Math.floor(Math.random() * SAMPLE_PRODUCTS.length)];
+    const product = products[Math.floor(Math.random() * products.length)];
+    if (!product) return;
     addToCart(product);
     toast.success(`Product added: ${product.name}`);
   };
 
   const simulatePhoneScan = () => {
-    const product = SAMPLE_PRODUCTS[Math.floor(Math.random() * SAMPLE_PRODUCTS.length)];
+    const product = products[Math.floor(Math.random() * products.length)];
+    if (!product) return;
     addToCart(product);
     toast.success(`Scanned via phone: ${product.name}`);
   };
@@ -88,9 +91,18 @@ export default function Billing() {
 
   const handleAddProduct = (product: { name: string; price: number; barcode: string }) => {
     const item = { id: `p-${Date.now()}`, ...product };
+    setProducts(prev => [...prev, item]);
     addToCart(item);
     toast.success("Product added to database");
     setShowAddProduct(false);
+  };
+
+  const handleEditProduct = (updated: { id: string; name: string; price: number; barcode: string }) => {
+    setProducts(prev => prev.map(p => p.id === updated.id ? updated : p));
+  };
+
+  const handleDeleteProduct = (product: { id: string; name: string; price: number; barcode: string }) => {
+    setProducts(prev => prev.filter(p => p.id !== product.id));
   };
 
   const inputClass = "w-full h-12 px-3 border border-input rounded-lg text-base focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-background";
@@ -107,25 +119,13 @@ export default function Billing() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={simulateScan}
-            className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent hover:bg-accent/20 transition-colors"
-            title="Barcode Scanner"
-          >
+          <button onClick={simulateScan} className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent hover:bg-accent/20 transition-colors" title="Barcode Scanner">
             <ScanBarcode size={16} />
           </button>
-          <button
-            onClick={simulatePhoneScan}
-            className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent hover:bg-accent/20 transition-colors"
-            title="Phone Camera"
-          >
+          <button onClick={simulatePhoneScan} className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent hover:bg-accent/20 transition-colors" title="Phone Camera">
             <Smartphone size={16} />
           </button>
-          <button
-            onClick={() => setShowAddProduct(true)}
-            className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent hover:bg-accent/20 transition-colors"
-            title="Add New Product"
-          >
+          <button onClick={() => setShowAddProduct(true)} className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent hover:bg-accent/20 transition-colors" title="Add New Product">
             <PackagePlus size={16} />
           </button>
         </div>
@@ -133,20 +133,14 @@ export default function Billing() {
 
       <div className="px-4 space-y-4">
         {/* Search Products Button */}
-        <button
-          onClick={() => setShowSearch(true)}
-          className="w-full h-12 bg-card rounded-2xl card-shadow border border-border flex items-center gap-3 px-4 text-muted-foreground hover:border-primary/30 transition-colors"
-        >
+        <button onClick={() => setShowSearch(true)} className="w-full h-12 bg-card rounded-2xl card-shadow border border-border flex items-center gap-3 px-4 text-muted-foreground hover:border-primary/30 transition-colors">
           <Search size={16} />
           <span className="text-sm">Search products...</span>
         </button>
 
         {/* Customer Toggle */}
         <section className="bg-card rounded-2xl card-shadow overflow-hidden">
-          <button
-            onClick={() => setShowCustomer(!showCustomer)}
-            className="w-full flex items-center justify-between p-4 text-sm font-medium text-foreground hover:bg-muted/40 transition-colors"
-          >
+          <button onClick={() => setShowCustomer(!showCustomer)} className="w-full flex items-center justify-between p-4 text-sm font-medium text-foreground hover:bg-muted/40 transition-colors">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center">
                 <User size={15} className="text-accent" />
@@ -215,7 +209,6 @@ export default function Billing() {
         {/* Payment Section */}
         {cart.length > 0 && (
           <section className="bg-card rounded-2xl card-shadow overflow-hidden">
-            {/* Totals */}
             <div className="p-4 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal</span>
@@ -226,17 +219,9 @@ export default function Billing() {
                 <span className="font-mono text-primary">₹{subtotal.toLocaleString()}</span>
               </div>
             </div>
-
-            {/* Cash Input */}
             <div className="px-4 pb-4 space-y-2">
               <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Cash Received (Optional)</label>
-              <input
-                value={cashReceived}
-                onChange={e => setCashReceived(e.target.value)}
-                className={inputClass}
-                placeholder="₹0"
-                type="number"
-              />
+              <input value={cashReceived} onChange={e => setCashReceived(e.target.value)} className={inputClass} placeholder="₹0" type="number" />
               {cash > 0 && (
                 <div className={`flex justify-between text-sm px-1 pt-1 ${insufficientCash ? "text-destructive" : "text-success"}`}>
                   <span className="font-medium">{insufficientCash ? "Insufficient" : "Change Due"}</span>
@@ -244,20 +229,11 @@ export default function Billing() {
                 </div>
               )}
             </div>
-
-            {/* Action Buttons */}
             <div className="p-4 pt-0 flex gap-3">
-              <button
-                onClick={handleMarkPaid}
-                disabled={insufficientCash}
-                className="flex-1 h-12 bg-primary text-primary-foreground font-bold rounded-xl hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
-              >
+              <button onClick={handleMarkPaid} disabled={insufficientCash} className="flex-1 h-12 bg-primary text-primary-foreground font-bold rounded-xl hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]">
                 Mark as Paid
               </button>
-              <button
-                onClick={handleSaveTab}
-                className="flex-1 h-12 border-2 border-primary text-foreground font-bold rounded-xl hover:bg-primary/5 transition-colors active:scale-[0.98]"
-              >
+              <button onClick={handleSaveTab} className="flex-1 h-12 border-2 border-primary text-foreground font-bold rounded-xl hover:bg-primary/5 transition-colors active:scale-[0.98]">
                 Save as Tab
               </button>
             </div>
@@ -270,10 +246,10 @@ export default function Billing() {
       <SearchProductModal
         open={showSearch}
         onClose={() => setShowSearch(false)}
-        products={SAMPLE_PRODUCTS}
+        products={products}
         onAddToCart={(p) => { addToCart(p); }}
-        onEditProduct={(p) => { toast.info(`Edit: ${p.name} (not yet implemented)`); }}
-        onDeleteProduct={(p) => { toast.info(`Delete: ${p.name} (not yet implemented)`); }}
+        onEditProduct={handleEditProduct}
+        onDeleteProduct={handleDeleteProduct}
       />
     </div>
   );
