@@ -267,6 +267,14 @@ export default function Billing() {
 
       <AddProductModal open={showAddProduct} onClose={() => setShowAddProduct(false)} onSave={handleAddProduct} />
       {lastTransaction && <ReceiptModal open={showReceipt} onClose={() => setShowReceipt(false)} transaction={lastTransaction} />}
+      <SearchProductModal
+        open={showSearch}
+        onClose={() => setShowSearch(false)}
+        products={SAMPLE_PRODUCTS}
+        onAddToCart={(p) => { addToCart(p); }}
+        onEditProduct={(p) => { toast.info(`Edit: ${p.name} (not yet implemented)`); }}
+        onDeleteProduct={(p) => { toast.info(`Delete: ${p.name} (not yet implemented)`); }}
+      />
     </div>
   );
 }
