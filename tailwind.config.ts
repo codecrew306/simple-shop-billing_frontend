@@ -14,8 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "sans-serif"],
-        mono: ["Roboto Mono", "monospace"],
+        sans: ["Fira Sans", "system-ui", "sans-serif"],
+        serif: ["DM Serif Display", "serif"],
+        mono: ["Fira Sans", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",

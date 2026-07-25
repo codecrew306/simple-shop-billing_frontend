@@ -1,59 +1,70 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Fira+Sans:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/*
+  Design system — "Paper & Ink"
+  Editorial, calm, retail-craft. Not corporate SaaS.
+  Palette: paper #f5f3ee, surface #e8e4dd, ink #2d2d2d, deep ink #0d0d0d.
+  Restrained accent: emerald for money/success, ink-red for destructive.
+*/
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 216 100% 4%;
+    /* Paper backgrounds */
+    --background: 42 25% 95%;           /* #f5f3ee paper */
+    --foreground: 0 0% 18%;             /* #2d2d2d ink */
 
-    --card: 210 17% 98%;
-    --card-foreground: 216 100% 4%;
+    --card: 42 20% 91%;                 /* #e8e4dd surface */
+    --card-foreground: 0 0% 5%;         /* #0d0d0d deep ink */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 216 100% 4%;
+    --popover: 42 25% 97%;
+    --popover-foreground: 0 0% 5%;
 
-    --primary: 45 100% 50%;
-    --primary-foreground: 216 100% 4%;
+    /* Ink is the primary. Actions read as printed text on paper. */
+    --primary: 0 0% 5%;                 /* deep ink #0d0d0d */
+    --primary-foreground: 42 25% 95%;   /* paper */
 
-    --secondary: 45 100% 52%;
-    --secondary-foreground: 216 100% 4%;
+    --secondary: 42 20% 91%;
+    --secondary-foreground: 0 0% 18%;
 
-    --muted: 210 17% 96%;
-    --muted-foreground: 220 9% 46%;
+    --muted: 42 18% 88%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 212 100% 21%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 42 20% 91%;
+    --accent-foreground: 0 0% 5%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 62% 38%;           /* ink-red stamp */
+    --destructive-foreground: 42 25% 95%;
 
-    --success: 160 84% 39%;
-    --success-foreground: 0 0% 100%;
+    --success: 158 64% 30%;             /* emerald cash-mark */
+    --success-foreground: 42 25% 95%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
+    --warning: 32 60% 42%;
+    --warning-foreground: 42 25% 95%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 45 100% 50%;
+    --border: 0 0% 18% / 0.12;          /* hairline ink */
+    --input: 0 0% 18% / 0.15;
+    --ring: 0 0% 18%;
 
-    --radius: 0.5rem;
+    --radius: 0.25rem;                  /* crisp, printed feel */
 
-    --navy-deep: 216 100% 4%;
-    --navy: 214 100% 12%;
-    --navy-medium: 211 100% 21%;
+    /* Legacy navy tokens kept as ink aliases so old classes don't visually break */
+    --navy-deep: 0 0% 5%;
+    --navy: 0 0% 12%;
+    --navy-medium: 0 0% 20%;
 
-    --sidebar-background: 216 100% 4%;
-    --sidebar-foreground: 210 17% 96%;
-    --sidebar-primary: 45 100% 50%;
-    --sidebar-primary-foreground: 216 100% 4%;
-    --sidebar-accent: 214 100% 12%;
-    --sidebar-accent-foreground: 210 17% 96%;
-    --sidebar-border: 211 100% 21%;
-    --sidebar-ring: 45 100% 50%;
+    /* Sidebar reads as a slightly darker paper strip, not a dark navy panel */
+    --sidebar-background: 42 20% 91%;   /* surface */
+    --sidebar-foreground: 0 0% 18%;
+    --sidebar-primary: 0 0% 5%;
+    --sidebar-primary-foreground: 42 25% 95%;
+    --sidebar-accent: 42 25% 95%;       /* paper for active row */
+    --sidebar-accent-foreground: 0 0% 5%;
+    --sidebar-border: 0 0% 18% / 0.12;
+    --sidebar-ring: 0 0% 5%;
   }
 }
 
@@ -62,16 +73,38 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans;
-    font-family: 'Inter', sans-serif;
+    @apply bg-background text-foreground;
+    font-family: 'Fira Sans', sans-serif;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+  h1, h2, h3, .font-serif {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
   }
   .font-mono {
-    font-family: 'Roboto Mono', monospace;
+    font-family: 'Fira Sans', sans-serif;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+  }
+  /* Small-caps micro labels used across the app */
+  .label-caps {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: hsl(var(--muted-foreground));
   }
 }
 
 @layer utilities {
   .card-shadow {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 0 hsl(0 0% 18% / 0.06), 0 8px 20px -12px hsl(0 0% 18% / 0.15);
+  }
+  .hairline {
+    border-top: 1px solid hsl(var(--border));
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 }
