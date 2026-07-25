@@ -30,38 +30,44 @@ export default function AppLayout() {
 
   return (
     <div className="min-h-screen flex w-full bg-background">
-      {/* Desktop sidebar */}
-      <aside className="hidden md:flex flex-col w-60 bg-navy-deep text-sidebar-foreground fixed h-full z-30">
-        <div className="p-5 border-b border-sidebar-border">
-          <h1 className="text-xl font-bold text-primary">SimpleBill</h1>
+      {/* Desktop sidebar — paper strip, hairline divider */}
+      <aside className="hidden md:flex flex-col w-64 bg-sidebar text-sidebar-foreground fixed h-full z-30 border-r border-sidebar-border">
+        <div className="px-7 py-8">
+          <h1 className="font-serif text-3xl leading-none text-foreground">SimpleBill</h1>
+          <p className="label-caps mt-2">Est. Ledger</p>
         </div>
-        <nav className="flex-1 py-4">
+        <nav className="flex-1 px-3 space-y-0.5">
           {SIDEBAR_ITEMS.map(item => {
             const active = location.pathname.startsWith(item.path);
             return (
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className={`w-full flex items-center gap-3 px-5 py-3 text-sm transition-colors ${active ? "border-l-3 border-primary text-primary bg-sidebar-accent" : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"}`}
+                className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm rounded-sm transition-colors ${active ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold" : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/60"}`}
               >
-                <item.icon size={20} />
+                <span className={`inline-block w-1 h-4 ${active ? "bg-foreground" : "bg-transparent"}`} />
+                <item.icon size={16} strokeWidth={1.75} />
                 <span>{item.label}</span>
               </button>
             );
           })}
         </nav>
-        <div className="p-5 border-t border-sidebar-border">
-          <p className="text-sm font-medium text-sidebar-foreground">{storeName}</p>
-          <span className="text-xs text-primary font-medium">Owner</span>
+        <div className="px-7 py-6 border-t border-sidebar-border">
+          <p className="label-caps mb-1">Operator</p>
+          <p className="text-sm font-semibold text-foreground">{storeName}</p>
+          <p className="text-xs text-muted-foreground">Owner</p>
         </div>
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col md:ml-60 pb-20 md:pb-0">
-        {/* Top bar */}
-        <header className="sticky top-0 z-20 bg-background border-b border-border px-4 py-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-foreground">{pageTitle}</h2>
-          <span className="text-xs text-muted-foreground font-mono">{storeId}</span>
+      <div className="flex-1 flex flex-col md:ml-64 pb-20 md:pb-0">
+        {/* Top bar — editorial masthead */}
+        <header className="sticky top-0 z-20 bg-background/95 backdrop-blur border-b border-border px-6 md:px-10 py-5 flex items-end justify-between">
+          <div>
+            <p className="label-caps mb-1">SimpleBill / {pageTitle}</p>
+            <h2 className="font-serif text-3xl md:text-4xl leading-none text-foreground">{pageTitle}</h2>
+          </div>
+          <span className="text-xs text-muted-foreground font-mono tabular hidden sm:inline">№ {storeId}</span>
         </header>
 
         <main className="flex-1 overflow-y-auto">
